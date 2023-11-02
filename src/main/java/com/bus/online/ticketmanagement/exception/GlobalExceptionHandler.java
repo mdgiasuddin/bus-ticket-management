@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
         return new ExceptionResponse(e.getCode(), e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ExceptionHandler(RuleViolationException.class)
+    public ExceptionResponse handleException(RuleViolationException e) {
+        return new ExceptionResponse(e.getCode(), e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
     public ExceptionResponse handleException(AuthenticationException e) {
