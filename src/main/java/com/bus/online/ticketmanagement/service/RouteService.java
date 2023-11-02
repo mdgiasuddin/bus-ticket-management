@@ -4,6 +4,7 @@ import com.bus.online.ticketmanagement.exception.ResourceNotFoundException;
 import com.bus.online.ticketmanagement.exception.RuleViolationException;
 import com.bus.online.ticketmanagement.mapper.RouteMapper;
 import com.bus.online.ticketmanagement.model.dto.request.RouteCreateRequest;
+import com.bus.online.ticketmanagement.model.dto.request.RouteUpdateRequest;
 import com.bus.online.ticketmanagement.model.dto.response.RouteResponse;
 import com.bus.online.ticketmanagement.model.entity.Route;
 import com.bus.online.ticketmanagement.model.entity.Station;
@@ -14,8 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.SAME_START_AND_END_STATION;
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.STATION_NOT_FOUND;
+import static com.bus.online.ticketmanagement.constant.ExceptionConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +48,15 @@ public class RouteService {
     public List<RouteResponse> getAllRoutes() {
         List<Route> routes = routeRepository.findRouteFetchStationsByIdIsNotNull();
         return routeMapper.getResponseFromRoutes(routes);
+    }
+
+    public void updateRoute(RouteUpdateRequest request) {
+        Route route = routeRepository.findById(request.id())
+                .orElseThrow(() -> new ResourceNotFoundException(ROUTE_NOT_FOUND));
+
+        route.setDetails(request.details());
+        route.setDistance(request.distance());
+
+        routeRepository.save(route);
     }
 }

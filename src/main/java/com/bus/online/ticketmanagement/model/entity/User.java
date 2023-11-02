@@ -1,14 +1,7 @@
 package com.bus.online.ticketmanagement.model.entity;
 
 import com.bus.online.ticketmanagement.model.enums.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,6 +44,9 @@ public class User implements UserDetails {
     @Column(nullable = false, columnDefinition = "varchar(2)")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TicketCounter ticketCounter;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;

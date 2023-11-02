@@ -1,22 +1,22 @@
 package com.bus.online.ticketmanagement.model.dto.request;
 
-import com.bus.online.ticketmanagement.model.enums.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UserCreateRequest(
+import java.util.Set;
+
+public record TicketCounterRequest(
+        Integer id,
         @NotBlank
         String name,
         @NotBlank
-        String username,
+        String masterName,
         @NotBlank
-        String password,
+        String address,
         @NotBlank
         String mobileNumber,
-        @NotBlank
-        String nid,
+        String optionalMobileNumber,
         @NotNull
-        Role role,
-        Integer ticketCounterId
+        Set<Integer> routeIds
 ) {
 }

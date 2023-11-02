@@ -1,16 +1,13 @@
 package com.bus.online.ticketmanagement.controller;
 
 import com.bus.online.ticketmanagement.model.dto.request.RouteCreateRequest;
+import com.bus.online.ticketmanagement.model.dto.request.RouteUpdateRequest;
 import com.bus.online.ticketmanagement.model.dto.response.RouteResponse;
 import com.bus.online.ticketmanagement.service.RouteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +24,12 @@ public class RouteController {
     @PostMapping
     public void createNewRoute(@RequestBody @Valid RouteCreateRequest request) {
         routeService.createNewRoute(request);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping
+    public void updateRoute(@RequestBody @Valid RouteUpdateRequest request) {
+        routeService.updateRoute(request);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
