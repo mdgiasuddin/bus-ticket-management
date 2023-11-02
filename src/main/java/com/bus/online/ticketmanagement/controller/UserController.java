@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.USER_URL;
+import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.USER_ENDPOINT;
 
 @RestController
-@RequestMapping(USER_URL)
+@RequestMapping(USER_ENDPOINT)
 @RequiredArgsConstructor
 public class UserController {
 

@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum ExceptionConstant {
     USER_NOT_FOUND("No user found!"),
-    UNIVERSITY_NOT_FOUND("No university found!");
+    STATION_NOT_FOUND("No station found!"),
+    STATION_ALREADY_EXISTS("Station already exists with this name!");
 
     private final String message;
 }

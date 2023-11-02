@@ -15,25 +15,25 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ExceptionResponse handleResourceNotFoundException(ResourceNotFoundException e) {
+    public ExceptionResponse handleException(ResourceNotFoundException e) {
+        return new ExceptionResponse(e.getCode(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UniqueConstraintViolationException.class)
+    public ExceptionResponse handleException(UniqueConstraintViolationException e) {
         return new ExceptionResponse(e.getCode(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
-    public ExceptionResponse handleAuthenticationException(AuthenticationException e) {
+    public ExceptionResponse handleException(AuthenticationException e) {
         return new ExceptionResponse("AUTHENTICATION_FAILED", e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ExceptionResponse handleSQLConstraintViolationException(SQLIntegrityConstraintViolationException e) {
-        return new ExceptionResponse("SQL_CONSTRAINTS_VIOLATED", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ValidationExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ValidationExceptionResponse handleException(MethodArgumentNotValidException ex) {
 
         List<InvalidField> invalidFields = ex.getBindingResult().getFieldErrors()
             .stream()
