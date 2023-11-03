@@ -1,6 +1,6 @@
 package com.bus.online.ticketmanagement.mapper;
 
-import com.bus.online.ticketmanagement.model.dto.request.TicketCounterRequest;
+import com.bus.online.ticketmanagement.model.dto.request.TicketCounterCreateRequest;
 import com.bus.online.ticketmanagement.model.entity.TicketCounter;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -10,5 +10,5 @@ import org.mapstruct.Mapper;
 )
 public interface TicketCounterMapper {
 
-    TicketCounter createTicketCounterFromRequest(TicketCounterRequest request);
+    TicketCounter createTicketCounterFromRequest(TicketCounterCreateRequest request);
 }

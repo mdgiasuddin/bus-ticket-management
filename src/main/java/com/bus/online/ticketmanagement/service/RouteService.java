@@ -13,9 +13,12 @@ import com.bus.online.ticketmanagement.repository.StationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.*;
+import static com.bus.online.ticketmanagement.constant.ExceptionConstant.ROUTE_NOT_FOUND;
+import static com.bus.online.ticketmanagement.constant.ExceptionConstant.SAME_START_AND_END_STATION;
+import static com.bus.online.ticketmanagement.constant.ExceptionConstant.STATION_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +45,13 @@ public class RouteService {
         route.setDetails(request.details());
         route.setDistance(request.distance());
 
-        routeRepository.save(route);
+        Route reverseRoute = new Route();
+        reverseRoute.setStartStation(endStation);
+        reverseRoute.setEndStation(startStation);
+        reverseRoute.setDetails(request.reverseDetails());
+        reverseRoute.setDistance(request.distance());
+
+        routeRepository.saveAll(Arrays.asList(route, reverseRoute));
     }
 
     public List<RouteResponse> getAllRoutes() {

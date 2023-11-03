@@ -1,10 +1,13 @@
 package com.bus.online.ticketmanagement.controller;
 
-import com.bus.online.ticketmanagement.model.dto.request.TicketCounterRequest;
+import com.bus.online.ticketmanagement.model.dto.request.TicketCounterCreateRequest;
+import com.bus.online.ticketmanagement.model.dto.request.TicketCounterRouteMappingRequest;
 import com.bus.online.ticketmanagement.service.TicketCounterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +21,15 @@ public class TicketCounterController {
 
     private final TicketCounterService ticketCounterService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public void createNewTicketCounter(@RequestBody @Valid TicketCounterRequest request) {
+    public void createNewTicketCounter(@RequestBody @Valid TicketCounterCreateRequest request) {
         ticketCounterService.createNewTicketCounter(request);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping("/routes")
+    public void updateTicketCounterRouteMapping(@RequestBody @Valid TicketCounterRouteMappingRequest request) {
+        ticketCounterService.updateTicketCounterRouteMapping(request);
     }
 }

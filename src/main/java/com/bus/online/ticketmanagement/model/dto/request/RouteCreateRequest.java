@@ -10,6 +10,8 @@ public record RouteCreateRequest(
         Integer endStationId,
         @NotBlank
         String details,
+        @NotBlank
+        String reverseDetails,
         @NotNull
         Integer distance
 ) {
