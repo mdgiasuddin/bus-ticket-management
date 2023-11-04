@@ -5,6 +5,7 @@ import com.bus.online.ticketmanagement.model.entity.Route;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
+import java.util.Collection;
 import java.util.List;
 
 @Mapper(
@@ -12,5 +13,5 @@ import java.util.List;
 )
 public interface RouteMapper {
 
-    List<RouteResponse> getResponseFromRoutes(List<Route> routes);
+    List<RouteResponse> getResponseFromRoutes(Collection<Route> routes);
 }

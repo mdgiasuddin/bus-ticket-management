@@ -32,6 +32,12 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(ActionNotPermittedException.class)
+    public ExceptionResponse handleException(ActionNotPermittedException e) {
+        return new ExceptionResponse(e.getCode(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
     public ExceptionResponse handleException(AuthenticationException e) {
         return new ExceptionResponse("AUTHENTICATION_FAILED", e.getMessage());

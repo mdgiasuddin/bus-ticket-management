@@ -37,4 +37,10 @@ public class RouteController {
     public List<RouteResponse> getAllRoutes() {
         return routeService.getAllRoutes();
     }
+
+    @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
+    @GetMapping("/counterMaster")
+    public List<RouteResponse> getAllRoutesForCounterMaster() {
+        return routeService.getAllRoutesForCounterMaster();
+    }
 }
