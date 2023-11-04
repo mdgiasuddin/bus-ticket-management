@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record JourneyScheduleRequest(
+public record TripRequest(
         @NotNull
         LocalDate journeyDate,
         @NotNull

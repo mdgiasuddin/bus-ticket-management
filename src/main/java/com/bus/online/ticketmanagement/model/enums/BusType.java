@@ -15,4 +15,8 @@ public enum BusType {
     private final int numberOfSeats;
     private final int numberOfRows;
     private final String description;
+
+    public String getName() {
+        return name();
+    }
 }

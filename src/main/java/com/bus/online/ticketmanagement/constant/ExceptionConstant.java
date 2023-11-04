@@ -10,10 +10,12 @@ public enum ExceptionConstant {
     STATION_NOT_FOUND("No station found!"),
     ROUTE_NOT_FOUND("No route found!"),
     TICKET_COUNTER_NOT_FOUND("No ticket counter found!"),
+    TRIP_NOT_FOUND("No trip found!"),
     STATION_ALREADY_EXISTS("Station already exists with this name!"),
     SAME_START_AND_END_STATION("Start and end stations are same!"),
     MISSING_ENTITIES("Some id's are not valid!"),
     ROUTE_NOT_PERMITTED("You are not permitted to access this route!"),
+    TRIP_NOT_PERMITTED("You are not permitted to access this trip!"),
     INVALID_DATE("Invalid date for query!"),
     LOGGED_IN_INFORMATION_MISSING("No logged in information found!");
 

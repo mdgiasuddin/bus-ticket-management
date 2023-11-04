@@ -2,15 +2,16 @@ package com.bus.online.ticketmanagement.service;
 
 import com.bus.online.ticketmanagement.exception.ActionNotPermittedException;
 import com.bus.online.ticketmanagement.exception.ResourceNotFoundException;
-import com.bus.online.ticketmanagement.mapper.JourneyScheduleMapper;
-import com.bus.online.ticketmanagement.model.dto.request.JourneyScheduleRequest;
+import com.bus.online.ticketmanagement.mapper.TripMapper;
+import com.bus.online.ticketmanagement.model.dto.request.TripRequest;
 import com.bus.online.ticketmanagement.model.dto.response.BusTypeResponse;
-import com.bus.online.ticketmanagement.model.dto.response.JourneyScheduleResponse;
-import com.bus.online.ticketmanagement.model.entity.JourneySchedule;
+import com.bus.online.ticketmanagement.model.dto.response.TripResponse;
+import com.bus.online.ticketmanagement.model.dto.response.SeatResponse;
+import com.bus.online.ticketmanagement.model.entity.Trip;
 import com.bus.online.ticketmanagement.model.entity.Route;
 import com.bus.online.ticketmanagement.model.entity.Seat;
 import com.bus.online.ticketmanagement.model.enums.BusType;
-import com.bus.online.ticketmanagement.repository.JourneyScheduleRepository;
+import com.bus.online.ticketmanagement.repository.TripRepository;
 import com.bus.online.ticketmanagement.repository.RouteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,23 +27,23 @@ import static com.bus.online.ticketmanagement.constant.ExceptionConstant.*;
 
 @Service
 @RequiredArgsConstructor
-public class JourneyScheduleService {
+public class TripService {
 
-    private final JourneyScheduleRepository journeyScheduleRepository;
+    private final TripRepository tripRepository;
     private final RouteRepository routeRepository;
-    private final JourneyScheduleMapper journeyScheduleMapper;
+    private final TripMapper tripMapper;
 
-    public void createNewJourneySchedule(JourneyScheduleRequest request) {
+    public void createNewTrip(TripRequest request) {
         Route route = routeRepository.findById(request.routeId())
                 .orElseThrow(() -> new ResourceNotFoundException(ROUTE_NOT_FOUND));
 
-        JourneySchedule schedule = new JourneySchedule();
-        schedule.setJourneyDate(request.journeyDate());
-        schedule.setStartTime(LocalTime.parse(request.startTime()));
-        schedule.setCoachNumber(request.coachNumber());
-        schedule.setRoute(route);
-        schedule.setFare(request.fare());
-        schedule.setBusType(request.busType());
+        Trip trip = new Trip();
+        trip.setJourneyDate(request.journeyDate());
+        trip.setStartTime(LocalTime.parse(request.startTime()));
+        trip.setCoachNumber(request.coachNumber());
+        trip.setRoute(route);
+        trip.setFare(request.fare());
+        trip.setBusType(request.busType());
 
         int rows = request.busType().getNumberOfRows();
         int cols = request.busType().getNumberOfSeats() / rows;
@@ -50,16 +52,16 @@ public class JourneyScheduleService {
                 Seat seat = new Seat();
                 seat.setSeatNumber((char) ('A' + i) + "" + j);
                 seat.setOrdering((short) (i * cols + j));
-                seat.setJourneySchedule(schedule);
+                seat.setTrip(trip);
 
-                schedule.getSeats().add(seat);
+                trip.getSeats().add(seat);
             }
         }
 
-        journeyScheduleRepository.save(schedule);
+        tripRepository.save(trip);
     }
 
-    public List<JourneyScheduleResponse> getAllJourneysOfARoute(int routeId, LocalDate journeyDate, UUID idKey) {
+    public List<TripResponse> getAllTripsOfARoute(int routeId, LocalDate journeyDate, UUID idKey) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ROUTE_NOT_FOUND));
 
@@ -71,11 +73,11 @@ public class JourneyScheduleService {
             throw new ActionNotPermittedException(INVALID_DATE);
         }
 
-        List<JourneySchedule> schedules = journeyScheduleRepository
+        List<Trip> trips = tripRepository
                 .findByRouteAndJourneyDateAndActiveIsTrueOrderByStartTime(route, journeyDate);
 
 
-        return journeyScheduleMapper.getResponseFromJourneySchedule(schedules);
+        return tripMapper.getResponseFromTrip(trips);
     }
 
     public List<BusTypeResponse> getAllBusTypes() {
@@ -90,6 +92,20 @@ public class JourneyScheduleService {
                     )
             );
         }
+
+        return response;
+    }
+
+    public List<SeatResponse> getAllSeatsForATrip(long tripId, UUID idKey) {
+        Trip trip = tripRepository.findTripFetchSeatsById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException(TRIP_NOT_FOUND));
+
+        if (!trip.getIdKey().equals(idKey)) {
+            throw new ActionNotPermittedException(TRIP_NOT_PERMITTED);
+        }
+
+        List<SeatResponse> response = tripMapper.getResponseFromSeats(trip.getSeats());
+        response.sort(Comparator.comparingInt(SeatResponse::getOrdering));
 
         return response;
     }

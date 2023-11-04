@@ -14,7 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class JourneyScheduleResponse {
+public class TripResponse {
+    private Long id;
     private LocalDate journeyDate;
     @JsonFormat(pattern = "hh:mm")
     private LocalTime startTime;

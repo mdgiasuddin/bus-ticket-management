@@ -33,5 +33,5 @@ public class Seat {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private JourneySchedule journeySchedule;
+    private Trip trip;
 }

@@ -31,7 +31,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class JourneySchedule {
+public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -63,7 +63,7 @@ public class JourneySchedule {
     private boolean active = true;
 
     @OneToMany(
-            mappedBy = "journeySchedule", fetch = FetchType.LAZY,
+            mappedBy = "trip", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true
     )
     private Set<Seat> seats = new HashSet<>();

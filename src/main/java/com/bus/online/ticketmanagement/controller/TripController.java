@@ -1,9 +1,10 @@
 package com.bus.online.ticketmanagement.controller;
 
-import com.bus.online.ticketmanagement.model.dto.request.JourneyScheduleRequest;
+import com.bus.online.ticketmanagement.model.dto.request.TripRequest;
 import com.bus.online.ticketmanagement.model.dto.response.BusTypeResponse;
-import com.bus.online.ticketmanagement.model.dto.response.JourneyScheduleResponse;
-import com.bus.online.ticketmanagement.service.JourneyScheduleService;
+import com.bus.online.ticketmanagement.model.dto.response.TripResponse;
+import com.bus.online.ticketmanagement.model.dto.response.SeatResponse;
+import com.bus.online.ticketmanagement.service.TripService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,34 +20,44 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.JOURNEY_SCHEDULE_ENDPOINT;
+import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.TRIP_ENDPOINT;
 
 @RestController
-@RequestMapping(JOURNEY_SCHEDULE_ENDPOINT)
+@RequestMapping(TRIP_ENDPOINT)
 @RequiredArgsConstructor
-public class JourneyScheduleController {
+public class TripController {
 
-    private final JourneyScheduleService journeyScheduleService;
+    private final TripService tripService;
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public void createNewJourneySchedule(@RequestBody @Valid JourneyScheduleRequest request) {
-        journeyScheduleService.createNewJourneySchedule(request);
+    public void createNewTrip(@RequestBody @Valid TripRequest request) {
+        tripService.createNewTrip(request);
     }
 
     @GetMapping("/busTypes")
     public List<BusTypeResponse> getAllBusTypes() {
-        return journeyScheduleService.getAllBusTypes();
+        return tripService.getAllBusTypes();
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
     @GetMapping("/{routeId}/{journeyDate}")
-    public List<JourneyScheduleResponse> getAllJourneysOfARoute(
+    public List<TripResponse> getAllTripsOfARoute(
             @PathVariable int routeId,
             @PathVariable LocalDate journeyDate,
             @RequestParam("idKey") UUID idKey
     ) {
 
-        return journeyScheduleService.getAllJourneysOfARoute(routeId, journeyDate, idKey);
+        return tripService.getAllTripsOfARoute(routeId, journeyDate, idKey);
+    }
+
+    @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
+    @GetMapping("/{tripId}/seats")
+    public List<SeatResponse> getAllSeatsForATrip(
+            @PathVariable long tripId,
+            @RequestParam("idKey") UUID idKey
+    ) {
+
+        return tripService.getAllSeatsForATrip(tripId, idKey);
     }
 }
