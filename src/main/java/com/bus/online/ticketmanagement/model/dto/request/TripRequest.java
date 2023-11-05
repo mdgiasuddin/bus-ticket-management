@@ -17,6 +17,8 @@ public record TripRequest(
         @NotNull
         Double fare,
         @NotNull
+        Double commission,
+        @NotNull
         BusType busType
 ) {
 }

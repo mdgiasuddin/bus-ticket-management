@@ -22,6 +22,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,8 +53,11 @@ public class Trip {
     @Column(nullable = false)
     private UUID idKey = UUID.randomUUID();
 
-    @Column(nullable = false, columnDefinition = "decimal(10,2)")
+    @Column(nullable = false, columnDefinition = "decimal(6,0)")
     private Double fare;
+
+    @Column(nullable = false, columnDefinition = "decimal(4,0)")
+    private Double commission;
 
     @Column(nullable = false, columnDefinition = "varchar(3)")
     @Enumerated(EnumType.STRING)
@@ -67,4 +71,17 @@ public class Trip {
             cascade = CascadeType.ALL, orphanRemoval = true
     )
     private Set<Seat> seats = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trip trip = (Trip) o;
+        return Objects.equals(id, trip.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

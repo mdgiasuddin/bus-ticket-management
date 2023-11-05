@@ -12,4 +12,5 @@ public class APIEndpointConstant {
     public static final String ROUTE_ENDPOINT = "/api/v1/routes";
     public static final String TICKET_COUNTER_ENDPOINT = "/api/v1/ticketCounters";
     public static final String TRIP_ENDPOINT = "/api/v1/trips";
+    public static final String BOOKING_ENDPOINT = "/api/v1/bookings";
 }

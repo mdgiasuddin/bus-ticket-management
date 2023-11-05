@@ -43,6 +43,7 @@ public class TripService {
         trip.setCoachNumber(request.coachNumber());
         trip.setRoute(route);
         trip.setFare(request.fare());
+        trip.setCommission(request.commission());
         trip.setBusType(request.busType());
 
         int rows = request.busType().getNumberOfRows();

@@ -30,13 +30,13 @@ public class TicketCounter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, columnDefinition = "varchar(100)")
+    @Column(nullable = false, columnDefinition = "varchar(40)")
     private String name;
 
-    @Column(nullable = false, columnDefinition = "varchar(100)")
+    @Column(nullable = false, columnDefinition = "varchar(40)")
     private String masterName;
 
-    @Column(nullable = false, columnDefinition = "varchar(150)")
+    @Column(nullable = false, columnDefinition = "varchar(50)")
     private String address;
 
     @Column(nullable = false, columnDefinition = "varchar(15)")
