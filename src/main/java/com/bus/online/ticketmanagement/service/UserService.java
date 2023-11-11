@@ -10,8 +10,12 @@ import com.bus.online.ticketmanagement.repository.TicketCounterRepository;
 import com.bus.online.ticketmanagement.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.codec.Hex;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.Random;
 
 import static com.bus.online.ticketmanagement.constant.ExceptionConstant.TICKET_COUNTER_NOT_FOUND;
 
@@ -24,16 +28,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-//    @PostConstruct
+    //    @PostConstruct
     public void createAdmin() {
-        User user = new User();
-        user.setName("Giash Uddin");
-        user.setUsername("admin");
-        user.setPassword(passwordEncoder.encode("admin"));
-        user.setMobileNumber("012345678");
-        user.setNid("012345678");
-        user.setRole(Role.AD);
-        userRepository.save(user);
+//        User user = new User();
+//        user.setName("Giash Uddin");
+//        user.setUsername("admin");
+//        user.setPassword(passwordEncoder.encode("admin"));
+//        user.setMobileNumber("012345678");
+//        user.setNid("012345678");
+//        user.setRole(Role.AD);
+//        userRepository.save(user);
+
+        Random random = new SecureRandom();
+        byte[] bytes = new byte[64];
+        random.nextBytes(bytes);
+        System.out.println("key: " + String.copyValueOf(Hex.encode(bytes)));
     }
 
     public void createNewUser(UserCreateRequest request) {
