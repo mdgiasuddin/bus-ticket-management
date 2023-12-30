@@ -2,6 +2,7 @@ package com.bus.online.ticketmanagement.controller;
 
 import com.bus.online.ticketmanagement.model.dto.request.UserCreateRequest;
 import com.bus.online.ticketmanagement.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
+    @Operation(summary = "Create a new user.")
     public void createNewUser(@RequestBody @Valid UserCreateRequest request) {
         userService.createNewUser(request);
     }

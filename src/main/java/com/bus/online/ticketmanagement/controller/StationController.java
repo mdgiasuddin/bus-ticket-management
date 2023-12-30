@@ -3,6 +3,7 @@ package com.bus.online.ticketmanagement.controller;
 
 import com.bus.online.ticketmanagement.model.dto.request.StationRequest;
 import com.bus.online.ticketmanagement.service.StationService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,12 +24,14 @@ public class StationController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
+    @Operation(summary = "Create a new bus station.")
     public void createNewStation(@RequestBody @Valid StationRequest request) {
         stationService.createNewStation(request);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping
+    @Operation(summary = "Update existing bus station.")
     public void updateStation(@RequestBody @Valid StationRequest request) {
         stationService.updateStation(request);
     }

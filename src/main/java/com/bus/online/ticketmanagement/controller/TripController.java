@@ -5,6 +5,7 @@ import com.bus.online.ticketmanagement.model.dto.response.BusTypeResponse;
 import com.bus.online.ticketmanagement.model.dto.response.TripResponse;
 import com.bus.online.ticketmanagement.model.dto.response.SeatResponse;
 import com.bus.online.ticketmanagement.service.TripService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,17 +32,20 @@ public class TripController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
+    @Operation(summary = "Create a new trip (New schedule for bus journey).")
     public void createNewTrip(@RequestBody @Valid TripRequest request) {
         tripService.createNewTrip(request);
     }
 
     @GetMapping("/busTypes")
+    @Operation(summary = "Create all the available bus types.")
     public List<BusTypeResponse> getAllBusTypes() {
         return tripService.getAllBusTypes();
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
     @GetMapping("/{routeId}/{journeyDate}")
+    @Operation(summary = "Get all the trips of a route on specific date.")
     public List<TripResponse> getAllTripsOfARoute(
             @PathVariable int routeId,
             @PathVariable LocalDate journeyDate,
@@ -53,6 +57,7 @@ public class TripController {
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
     @GetMapping("/{tripId}/seats")
+    @Operation(summary = "Get all the seats of a trip with current status (available/booked).")
     public List<SeatResponse> getAllSeatsForATrip(
             @PathVariable long tripId,
             @RequestParam("idKey") UUID idKey

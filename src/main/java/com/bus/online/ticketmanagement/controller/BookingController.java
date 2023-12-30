@@ -3,6 +3,7 @@ package com.bus.online.ticketmanagement.controller;
 import com.bus.online.ticketmanagement.model.dto.request.TicketBookingRequest;
 import com.bus.online.ticketmanagement.model.dto.response.BookingInfoResponse;
 import com.bus.online.ticketmanagement.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
     @PostMapping
+    @Operation(summary = "Book ticket with one or more seats.")
     public BookingInfoResponse bookTicket(@RequestBody @Valid TicketBookingRequest request) {
         return bookingService.bookTicket(request);
     }
