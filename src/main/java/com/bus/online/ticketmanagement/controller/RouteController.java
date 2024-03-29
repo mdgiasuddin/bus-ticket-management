@@ -43,7 +43,7 @@ public class RouteController {
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
-    @GetMapping("/counterMaster")
+    @GetMapping("/v1/counterMaster")
     @Operation(summary = "Get the bus routes permitted to to a counter-master.")
     public List<RouteResponse> getAllRoutesForCounterMaster() {
         return routeService.getAllRoutesForCounterMaster();

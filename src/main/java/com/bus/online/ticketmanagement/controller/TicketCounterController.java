@@ -30,7 +30,7 @@ public class TicketCounterController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PutMapping("/routes")
+    @PutMapping("/v1/routes")
     @Operation(summary = "Update route permissions of a counter master. Always take the updated list of routes.")
     public void updateTicketCounterRouteMapping(@RequestBody @Valid TicketCounterRouteMappingRequest request) {
         ticketCounterService.updateTicketCounterRouteMapping(request);

@@ -20,7 +20,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/login")
+    @PostMapping("/v1/login")
     @Operation(summary = "Login and get access-token using username & password.")
     public AuthenticationResponse login(@RequestBody @Valid AuthenticationRequest request) {
         return authenticationService.login(request);

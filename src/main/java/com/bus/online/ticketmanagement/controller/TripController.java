@@ -37,14 +37,14 @@ public class TripController {
         tripService.createNewTrip(request);
     }
 
-    @GetMapping("/busTypes")
+    @GetMapping("/v1/busTypes")
     @Operation(summary = "Create all the available bus types.")
     public List<BusTypeResponse> getAllBusTypes() {
         return tripService.getAllBusTypes();
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
-    @GetMapping("/{routeId}/{journeyDate}")
+    @GetMapping("/v1/{routeId}/{journeyDate}")
     @Operation(summary = "Get all the trips of a route on specific date.")
     public List<TripResponse> getAllTripsOfARoute(
             @PathVariable int routeId,
@@ -56,7 +56,7 @@ public class TripController {
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")
-    @GetMapping("/{tripId}/seats")
+    @GetMapping("/v1/{tripId}/seats")
     @Operation(summary = "Get all the seats of a trip with current status (available/booked).")
     public List<SeatResponse> getAllSeatsForATrip(
             @PathVariable long tripId,
