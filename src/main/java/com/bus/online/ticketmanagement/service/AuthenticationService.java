@@ -3,9 +3,15 @@ package com.bus.online.ticketmanagement.service;
 import com.bus.online.ticketmanagement.config.security.JwtService;
 import com.bus.online.ticketmanagement.model.dto.request.AuthenticationRequest;
 import com.bus.online.ticketmanagement.model.dto.response.AuthenticationResponse;
+import com.bus.online.ticketmanagement.model.entity.RsaKeyPair;
 import com.bus.online.ticketmanagement.model.entity.User;
+import com.bus.online.ticketmanagement.repository.RsaKeyPairRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,13 +21,19 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RsaKeyPairRepository rsaKeyPairRepository;
+
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExpiration;
 
     public AuthenticationResponse login(AuthenticationRequest request) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Authentication authentication = authenticationManager.authenticate(
@@ -43,7 +55,23 @@ public class AuthenticationService {
         String publicKey = Base64.encodeBase64String(kp.getPublic().getEncoded());
         String privateKey = Base64.encodeBase64String(kp.getPrivate().getEncoded());
 
-        String jwtToken = jwtService.generateAccessToken(user,privateKey);
-        return new AuthenticationResponse(jwtToken, publicKey);
+        String jwtToken = jwtService.generateAccessToken(user, privateKey);
+
+        RsaKeyPair rsaKeyPair = new RsaKeyPair();
+        rsaKeyPair.setPublicKey(publicKey);
+        rsaKeyPair.setExpiryTime(LocalDateTime.now().plusMinutes(jwtExpiration));
+        rsaKeyPair = rsaKeyPairRepository.save(rsaKeyPair);
+
+        return new AuthenticationResponse(jwtToken, rsaKeyPair.getId());
     }
+
+    /*
+     * Remove expired public keys in every 15 min.
+     * */
+    @Transactional
+    @Scheduled(fixedDelay = 300000, initialDelay = 1000)
+    public void removeExpiredPublicKeys() {
+        rsaKeyPairRepository.deleteByExpiryTimeBefore(LocalDateTime.now());
+    }
+
 }

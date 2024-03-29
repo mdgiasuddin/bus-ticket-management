@@ -11,6 +11,7 @@ public enum ExceptionConstant {
     ROUTE_NOT_FOUND("No route found!"),
     TICKET_COUNTER_NOT_FOUND("No ticket counter found!"),
     TRIP_NOT_FOUND("No trip found!"),
+    KEY_PAIR_NOT_FOUND("No key-pair found!"),
     ROUTE_MAPPING_NOT_FOUND("No route mapping found!"),
     STATION_ALREADY_EXISTS("Station already exists with this name!"),
     SAME_START_AND_END_STATION("Start and end stations are same!"),
