@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.bus.online.ticketmanagement.constant.ApplicationConstants.AUTH_KEY;
 import static com.bus.online.ticketmanagement.constant.ApplicationConstants.TOKEN_TYPE;
 import static com.bus.online.ticketmanagement.constant.ExceptionConstant.USER_NOT_FOUND;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -31,29 +32,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull FilterChain filterChain
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader(AUTHORIZATION);
+        final String publicKey = request.getHeader(AUTH_KEY);
+
         if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         final String accessToken = authHeader.substring(TOKEN_TYPE.length());
-        String username = jwtService.extractUsername(accessToken);
-        User user = userRepository.findUserByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.getMessage()));
+        try {
+            String username = jwtService.extractUsername(accessToken, publicKey);
+            User user = userRepository.findUserByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.getMessage()));
 
-        if (jwtService.isTokenValid(accessToken)) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                user.getAuthorities()
-            );
+            if (jwtService.isTokenValid(accessToken, publicKey)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        user.getAuthorities()
+                );
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception ignored) {
+
         }
 
         filterChain.doFilter(request, response);

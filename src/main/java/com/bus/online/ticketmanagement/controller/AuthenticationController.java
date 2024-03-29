@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.AUTHENTICATION_ENDPOINT;
 
 @RestController
@@ -22,7 +25,9 @@ public class AuthenticationController {
 
     @PostMapping("/v1/login")
     @Operation(summary = "Login and get access-token using username & password.")
-    public AuthenticationResponse login(@RequestBody @Valid AuthenticationRequest request) {
+    public AuthenticationResponse login(
+            @RequestBody @Valid AuthenticationRequest request
+    ) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return authenticationService.login(request);
     }
 }

@@ -6,6 +6,7 @@ public class ApplicationConstants {
 
     }
 
+    public static final String AUTH_KEY = "AuthorizationKey";
     public static final String TOKEN_TYPE = "Bearer ";
     public static final int PRESENCE_BEFORE_START = 30;
 }
