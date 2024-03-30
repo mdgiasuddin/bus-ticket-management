@@ -23,6 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 
+import static io.jsonwebtoken.SignatureAlgorithm.RS256;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -48,12 +50,12 @@ public class AuthenticationService {
     }
 
     private AuthenticationResponse generateAccessToken(User user) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair kp = kpg.generateKeyPair();
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RS256.getFamilyName());
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-        String publicKey = Base64.encodeBase64String(kp.getPublic().getEncoded());
-        String privateKey = Base64.encodeBase64String(kp.getPrivate().getEncoded());
+        String publicKey = Base64.encodeBase64String(keyPair.getPublic().getEncoded());
+        String privateKey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
 
         String jwtToken = jwtService.generateAccessToken(user, privateKey);
 
