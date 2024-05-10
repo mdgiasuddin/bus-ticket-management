@@ -35,14 +35,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+
         final String authHeader = request.getHeader(AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE)) {
+            log.info("API path: {}", requestURI);
+
             filterChain.doFilter(request, response);
             return;
         }
 
         final String accessToken = authHeader.substring(TOKEN_TYPE.length());
         String username = jwtService.extractUsername(accessToken);
+        log.info("Username: {}, API path: {}", username, requestURI);
+
         User user = userRepository.findUserByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.getMessage()));
 
