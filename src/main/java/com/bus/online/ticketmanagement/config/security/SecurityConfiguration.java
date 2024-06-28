@@ -123,7 +123,7 @@ public class SecurityConfiguration {
         FilterRegistrationBean<SwaggerBasicAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new SwaggerBasicAuthFilter());
         registrationBean.addUrlPatterns("/swagger/*", "/v2/api-docs", "/swagger-ui.html");
-        registrationBean.setName("SwaggerBasicAuthFilter");
+        registrationBean.setName("swaggerBasicAuthFilterRegistration");
         return registrationBean;
     }
 }
