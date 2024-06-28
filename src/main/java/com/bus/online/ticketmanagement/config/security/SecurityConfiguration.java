@@ -1,6 +1,8 @@
 package com.bus.online.ticketmanagement.config.security;
 
+import com.bus.online.ticketmanagement.config.swagger.SwaggerBasicAuthFilter;
 import com.bus.online.ticketmanagement.repository.UserRepository;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -110,5 +112,18 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    /*
+     * Basic authentication for accessing swagger-ui.
+     * Login logic is written inside SwaggerBasicAuthFilter
+     * */
+    @Bean
+    public FilterRegistrationBean<SwaggerBasicAuthFilter> swaggerBasicAuthFilterRegistration() {
+        FilterRegistrationBean<SwaggerBasicAuthFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new SwaggerBasicAuthFilter());
+        registrationBean.addUrlPatterns("/swagger/*", "/v2/api-docs", "/swagger-ui.html");
+        registrationBean.setName("SwaggerBasicAuthFilter");
+        return registrationBean;
     }
 }
