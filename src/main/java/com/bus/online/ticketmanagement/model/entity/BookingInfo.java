@@ -1,11 +1,8 @@
 package com.bus.online.ticketmanagement.model.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -19,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Table
 @AllArgsConstructor
@@ -26,8 +27,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class BookingInfo {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false, columnDefinition = "varchar(40)")
@@ -57,18 +59,15 @@ public class BookingInfo {
     @Column(nullable = false, columnDefinition = "decimal(6,0)")
     private Double fare;
 
-    @Column(nullable = false, columnDefinition = "decimal(4,0)")
-    private Double commission;
+    @ManyToOne(fetch = LAZY)
+    private TicketCounter boardingPoint;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TicketCounter ticketCounter;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private Trip trip;
 
     @OneToMany(
-            mappedBy = "bookingInfo", fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST
+            mappedBy = "bookingInfo", fetch = LAZY,
+            cascade = PERSIST
     )
-    private Set<Seat> seats = new HashSet<>();
+    private Set<TicketSeat> seats = new HashSet<>();
 }

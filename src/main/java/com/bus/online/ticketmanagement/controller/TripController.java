@@ -1,9 +1,8 @@
 package com.bus.online.ticketmanagement.controller;
 
-import com.bus.online.ticketmanagement.model.dto.request.TripRequest;
-import com.bus.online.ticketmanagement.model.dto.response.BusTypeResponse;
-import com.bus.online.ticketmanagement.model.dto.response.TripResponse;
+import com.bus.online.ticketmanagement.model.dto.request.TripCreateRequest;
 import com.bus.online.ticketmanagement.model.dto.response.SeatResponse;
+import com.bus.online.ticketmanagement.model.dto.response.TripResponse;
 import com.bus.online.ticketmanagement.service.TripService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -33,14 +32,8 @@ public class TripController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Create a new trip (New schedule for bus journey).")
-    public void createNewTrip(@RequestBody @Valid TripRequest request) {
+    public void createNewTrip(@Valid @RequestBody TripCreateRequest request) {
         tripService.createNewTrip(request);
-    }
-
-    @GetMapping("/v1/busTypes")
-    @Operation(summary = "Create all the available bus types.")
-    public List<BusTypeResponse> getAllBusTypes() {
-        return tripService.getAllBusTypes();
     }
 
     @PreAuthorize("hasAnyRole('COUNTER_MASTER')")

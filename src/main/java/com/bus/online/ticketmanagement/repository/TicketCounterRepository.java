@@ -3,7 +3,6 @@ package com.bus.online.ticketmanagement.repository;
 import com.bus.online.ticketmanagement.model.entity.TicketCounter;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ public interface TicketCounterRepository extends JpaRepository<TicketCounter, In
     @EntityGraph(attributePaths = {"routeMappings.route"})
     Optional<TicketCounter> findCounterFetchRouteMappingById(Integer id);
 
-    @EntityGraph(attributePaths = {"routeMappings.route.startStation", "routeMappings.route.endStation"})
-    @Query("select tc from User u join u.ticketCounter tc where u.id = :userId")
-    Optional<TicketCounter> findTicketCounterFromUser(Integer userId);
+//    @EntityGraph(attributePaths = {"routeMappings.route.startStation", "routeMappings.route.endStation"})
+//    @Query("select tc from User u join u.ticketCounter tc where u.id = :userId")
+//    Optional<TicketCounter> findTicketCounterFromUser(Integer userId);
 }

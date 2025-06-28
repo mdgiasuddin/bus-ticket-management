@@ -1,4 +1,4 @@
-package com.bus.online.ticketmanagement.utilt;
+package com.bus.online.ticketmanagement.util;
 
 import com.bus.online.ticketmanagement.model.entity.User;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

@@ -5,6 +5,10 @@ import com.bus.online.ticketmanagement.repository.UserRepository;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,6 +31,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.security.SecureRandom;
 import java.util.Collections;
 
+import static com.bus.online.ticketmanagement.model.enumeration.Role.ADMIN;
+import static com.bus.online.ticketmanagement.model.enumeration.Role.APPROVER;
+import static com.bus.online.ticketmanagement.model.enumeration.Role.COUNTER_MASTER;
+import static com.bus.online.ticketmanagement.model.enumeration.Role.DATA_ENTRY;
+import static com.bus.online.ticketmanagement.model.enumeration.Role.MANAGER;
+import static com.bus.online.ticketmanagement.model.enumeration.Role.USER;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -40,7 +51,7 @@ public class SecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository.findUserByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found..."));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found..."));
     }
 
     @Bean
@@ -50,11 +61,10 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationProvider authenticationProvider(
-        UserDetailsService userDetailsService,
-        PasswordEncoder passwordEncoder
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
     ) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return authenticationProvider;
@@ -62,45 +72,64 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager(
-        AuthenticationConfiguration configuration
+            AuthenticationConfiguration configuration
     ) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-        HttpSecurity http,
-        AuthenticationProvider authenticationProvider,
-        JwtAuthenticationFilter authenticationFilter
+            HttpSecurity http,
+            AuthenticationProvider authenticationProvider,
+            JwtAuthenticationFilter authenticationFilter
     ) throws Exception {
         return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> corsConfigurationSource())
-            .authorizeHttpRequests(
-                auth -> auth.requestMatchers(
-                        "/v2/api-docs",
-                        "/v3/api-docs",
-                        "/v3/api-docs/**",
-                        "/swagger-resources",
-                        "/swagger-resources/**",
-                        "/configuration/ui",
-                        "/configuration/security",
-                        "/swagger-ui/**",
-                        "/webjars/**",
-                        "/swagger-ui.html",
-                        "/api/auth/**"
-                    )
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()
-            )
-            .sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> corsConfigurationSource())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers(
+                                        "/v2/api-docs",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources",
+                                        "/swagger-resources/**",
+                                        "/configuration/ui",
+                                        "/configuration/security",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html",
+                                        "/api/auth/**"
+                                )
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role(ADMIN.name()).implies(MANAGER.name())
+                .role(ADMIN.name()).implies(DATA_ENTRY.name())
+                .role(ADMIN.name()).implies(APPROVER.name())
+                .role(ADMIN.name()).implies(COUNTER_MASTER.name())
+                .role(ADMIN.name()).implies(USER.name())
+                .role(APPROVER.name()).implies(DATA_ENTRY.name())
+                .build();
+    }
+
+    @Bean
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy);
+        return expressionHandler;
     }
 
     @Bean
@@ -122,7 +151,7 @@ public class SecurityConfiguration {
     public FilterRegistrationBean<SwaggerBasicAuthFilter> swaggerBasicAuthFilterRegistration() {
         FilterRegistrationBean<SwaggerBasicAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new SwaggerBasicAuthFilter());
-        registrationBean.addUrlPatterns("/swagger/*", "/v2/api-docs", "/swagger-ui.html");
+        registrationBean.addUrlPatterns("/swagger/*", "/v2/api-docs", "/v3/api-docs", "/swagger-ui.html");
         registrationBean.setName("swaggerBasicAuthFilterRegistration");
         return registrationBean;
     }

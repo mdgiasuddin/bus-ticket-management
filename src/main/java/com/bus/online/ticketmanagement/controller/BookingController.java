@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.BOOKING_ENDPOINT;
-
 @RestController
-@RequestMapping(BOOKING_ENDPOINT)
+@RequestMapping("/api/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 

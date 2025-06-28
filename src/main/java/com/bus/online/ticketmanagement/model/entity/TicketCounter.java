@@ -1,13 +1,13 @@
 package com.bus.online.ticketmanagement.model.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Table
@@ -33,21 +36,13 @@ public class TicketCounter {
     @Column(nullable = false, columnDefinition = "varchar(40)")
     private String name;
 
-    @Column(nullable = false, columnDefinition = "varchar(40)")
-    private String masterName;
-
-    @Column(nullable = false, columnDefinition = "varchar(50)")
-    private String address;
-
-    @Column(nullable = false, columnDefinition = "varchar(15)")
-    private String mobileNumber;
-
-    @Column(columnDefinition = "varchar(15)")
-    private String optionalMobileNumber;
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(nullable = false)
+    private User counterMaster;
 
     @OneToMany(
-            mappedBy = "ticketCounter", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL, orphanRemoval = true
+            mappedBy = "ticketCounter", fetch = LAZY,
+            cascade = ALL, orphanRemoval = true
     )
     private Set<TicketCounterRouteMapping> routeMappings = new HashSet<>();
 

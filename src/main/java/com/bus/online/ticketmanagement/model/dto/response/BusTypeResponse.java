@@ -1,17 +1,21 @@
 package com.bus.online.ticketmanagement.model.dto.response;
 
-import lombok.AllArgsConstructor;
+import com.bus.online.ticketmanagement.model.entity.BusType;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class BusTypeResponse {
+    private Integer id;
     private String name;
     private int numberOfSeats;
     private int numberOfRows;
-    private String description;
+
+    public BusTypeResponse(BusType busType) {
+        this.id = busType.getId();
+        this.name = busType.getName();
+        this.numberOfSeats = busType.getNumberOfSeats();
+        this.numberOfRows = busType.getNumberOfRows();
+    }
 }

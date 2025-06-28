@@ -13,23 +13,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.bus.online.ticketmanagement.constant.APIEndpointConstant.TICKET_COUNTER_ENDPOINT;
-
 @RestController
-@RequestMapping(TICKET_COUNTER_ENDPOINT)
+@RequestMapping("/api/ticket-counters")
 @RequiredArgsConstructor
 public class TicketCounterController {
 
     private final TicketCounterService ticketCounterService;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('DATA_ENTRY')")
     @PostMapping
     @Operation(summary = "Create a new ticket counter.")
-    public void createNewTicketCounter(@RequestBody @Valid TicketCounterCreateRequest request) {
+    public void createNewTicketCounter(@Valid @RequestBody TicketCounterCreateRequest request) {
         ticketCounterService.createNewTicketCounter(request);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PostMapping
+//    @Operation(summary = "Update ticket counter.")
+//    public void updateTicketCount(@RequestBody @Valid TicketCounterUpdateRequest request) {
+//        ticketCounterService.createNewTicketCounter(request);
+//    }
+
+    @PreAuthorize("hasAnyRole('DATA_ENTRY')")
     @PutMapping("/v1/routes")
     @Operation(summary = "Update route permissions of a counter master. Always take the updated list of routes.")
     public void updateTicketCounterRouteMapping(@RequestBody @Valid TicketCounterRouteMappingRequest request) {

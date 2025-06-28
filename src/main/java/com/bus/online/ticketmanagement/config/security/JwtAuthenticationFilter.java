@@ -18,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 import static com.bus.online.ticketmanagement.constant.ApplicationConstants.TOKEN_TYPE;
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.USER_NOT_FOUND;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -50,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Username: {}, API path: {}", username, requestURI);
 
         User user = userRepository.findUserByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new UsernameNotFoundException("No user found by username: " + username));
 
         if (jwtService.isTokenValid(accessToken)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

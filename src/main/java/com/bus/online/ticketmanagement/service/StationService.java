@@ -1,26 +1,34 @@
 package com.bus.online.ticketmanagement.service;
 
 import com.bus.online.ticketmanagement.exception.ResourceNotFoundException;
-import com.bus.online.ticketmanagement.exception.UniqueConstraintViolationException;
-import com.bus.online.ticketmanagement.model.dto.request.StationRequest;
+import com.bus.online.ticketmanagement.model.dto.request.StationCreateRequest;
+import com.bus.online.ticketmanagement.model.dto.request.StationUpdateRequest;
+import com.bus.online.ticketmanagement.model.dto.response.StationResponse;
 import com.bus.online.ticketmanagement.model.entity.Station;
 import com.bus.online.ticketmanagement.repository.StationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.STATION_ALREADY_EXISTS;
-import static com.bus.online.ticketmanagement.constant.ExceptionConstant.STATION_NOT_FOUND;
+import java.util.List;
 
+import static com.bus.online.ticketmanagement.constant.ExceptionCode.STATION_NOT_FOUND;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StationService {
 
     private final StationRepository stationRepository;
 
-    public void createNewStation(StationRequest request) {
-        if (stationRepository.existsByName(request.name())) {
-            throw new UniqueConstraintViolationException(STATION_ALREADY_EXISTS);
-        }
+    public List<StationResponse> getAllStations() {
+        return stationRepository.findAll()
+                .stream()
+                .map(StationResponse::new)
+                .toList();
+    }
+
+    public void createNewStation(StationCreateRequest request) {
         Station station = new Station();
         station.setName(request.name());
         station.setDistrict(request.district());
@@ -28,16 +36,12 @@ public class StationService {
         stationRepository.save(station);
     }
 
-    public void updateStation(StationRequest request) {
+    public void updateStation(StationUpdateRequest request) {
         Station station = stationRepository.findById(request.id())
-                .orElseThrow(() -> new ResourceNotFoundException(STATION_NOT_FOUND));
-
-        if (
-                !station.getName().equals(request.name()) &&
-                        stationRepository.existsByName(request.name())
-        ) {
-            throw new UniqueConstraintViolationException(STATION_ALREADY_EXISTS);
-        }
+                .orElseThrow(() -> {
+                    log.error("No station found by id: {}", request.id());
+                    return new ResourceNotFoundException(STATION_NOT_FOUND, "No station found by id: " + request.id());
+                });
 
         station.setName(request.name());
         station.setDistrict(request.district());

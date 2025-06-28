@@ -1,22 +1,23 @@
 package com.bus.online.ticketmanagement.model.dto.request;
 
-import com.bus.online.ticketmanagement.model.enumeration.Role;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
-public record UserCreateRequest(
+public record CounterMasterRequest(
         @NotBlank
         String name,
+
         @NotBlank
+        @Pattern(regexp = "^[a-z0-9.]{8,}$", message = "Must have 8 characters with lowercase letters or digits or dot(.)")
         String username,
+
         @NotBlank
-        String password,
+        String address,
+
         @NotBlank
         String mobileNumber,
+
         @NotBlank
-        String nid,
-        @NotNull
-        Role role,
-        Integer ticketCounterId
+        String nid
 ) {
 }

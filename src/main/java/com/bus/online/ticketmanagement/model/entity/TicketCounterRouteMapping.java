@@ -1,7 +1,6 @@
 package com.bus.online.ticketmanagement.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.ManyToOne;
@@ -13,6 +12,8 @@ import lombok.Setter;
 
 import java.util.Objects;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table
 @AllArgsConstructor
@@ -23,11 +24,11 @@ import java.util.Objects;
 public class TicketCounterRouteMapping {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private TicketCounter ticketCounter;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private Route route;
 
     private Integer timeDiffFromStartStation;
